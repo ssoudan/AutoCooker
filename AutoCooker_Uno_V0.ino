@@ -64,7 +64,7 @@ MAX6675 thermocouple(T_CLK, T_CS, T_D0);
 
 // variables to limit temperature read frequency
 #define TEMPERATURE_READ_COUNT 2
-int i = 0;
+int loopCount = 0;
 float temperatureC;
 
 // The display
@@ -142,14 +142,14 @@ void loop() {
   // read the temperature and update the current step
   // every (TEMPERATURE_READ_COUNT+1) rounds (each round being 100 ms
   // + the duration of I2C operations)
-  if (i++ == TEMPERATURE_READ_COUNT) {
+  if (loopCount++ == TEMPERATURE_READ_COUNT) {
     temperatureC = thermocouple.readCelsius();
     if (!isnan(temperatureC)) {
       Serial.print("C = "); 
       Serial.println(temperatureC);
       steps.setCurrentTemperature(temperatureC);
     }
-    i = 0;
+    loopCount = 0;
   }
 
   // update the internale state of the step holder with regards to the current time
