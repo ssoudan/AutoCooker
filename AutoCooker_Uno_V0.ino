@@ -17,55 +17,82 @@
   limitations under the License.
  
 */
+// I2C/SPI includes
 #include <Wire.h>
 
+// Display includes
 #ifndef ADAFRUIT_SSD1306__
   #define ADAFRUIT_SSD1306__
   #include <Adafruit_GFX.h>
   #include <Adafruit_SSD1306.h>
 #endif
 
+// Steps includes
 #include "StepHolder.h"
 
+// Relay includes
 #include <TinkerKit.h>
 
-#include <math.h>
+// Temperature sensor includes
 #include <max6675.h>
 
+// I2C IO mux includes
 #include <Adafruit_MCP23017.h>
 
+
+/*
+  Global objects
+*/
+
+// The MUX
 Adafruit_MCP23017 mcp;
 
+// The relay
 #define RELAY_PIN 2
 TKRelay relay(2);
 
+// variables and constants to limit relay switching frequency
+#define MIN_DURATION 10*1000 // in ms
+unsigned long lastChange;
+boolean lastState;
+
+// The thermocouple
 #define T_CLK 7
 #define T_CS 6
 #define T_D0 5
 MAX6675 thermocouple(T_CLK, T_CS, T_D0);
 
-#define OLED_RESET 4
-Adafruit_SSD1306 display(OLED_RESET);
-
-#define MIN_DURATION 10*1000 // in ms
-
-unsigned long lastChange;
-boolean lastState;
-
+// variables to limit temperature read frequency
+#define TEMPERATURE_READ_COUNT 2
 int i = 0;
 float temperatureC;
 
+// The display
+#define OLED_RESET 4
+Adafruit_SSD1306 display(OLED_RESET);
+
+// That's where we store/manage the steps
 StepHolder steps;
 
+/*
+  Setup function (only called once)
+*/
 void setup() {
+
+  // initialize serial port
   Serial.begin(115200);
   Serial.println("AutoCooker V0");
 
+  // switch the relay off
+  relay.off();
+
+  // and remember that
   lastChange = millis();
   lastState = false;
-  relay.off();
   
-  mcp.begin();      // use default address 0
+  // initialize the IO mux
+  // use default address 0
+  mcp.begin();      
 
   mcp.pinMode(7, INPUT);
   mcp.pullUp(7, HIGH);  // turn on a 100K pullup internally
@@ -79,19 +106,16 @@ void setup() {
   mcp.pinMode(4, INPUT);
   mcp.pullUp(4, HIGH);  // turn on a 100K pullup internally
 
-  // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3D);  // initialize with the I2C addr 0x3D (for the 128x64)
-  // init done
-  
-  // display.display(); // show splashscreen
-  // delay(2000);
-  display.clearDisplay();   // clears the screen and buffer
+  // initialize with the I2C addr 0x3D
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
+  // clears the screen and buffer
+  display.clearDisplay();
 
   Serial.println("Done with setup()");
 }
 
 /*
-  Main loop
+  Main loop (called in a loop after setup() has been called)
 */
 void loop() {
 
@@ -116,8 +140,9 @@ void loop() {
   }
 
   // read the temperature and update the current step
-  // every 3 rounds (~300 ms)
-  if (i++ == 2) {
+  // every (TEMPERATURE_READ_COUNT+1) rounds (each round being 100 ms
+  // + the duration of I2C operations)
+  if (i++ == TEMPERATURE_READ_COUNT) {
     temperatureC = thermocouple.readCelsius();
     if (!isnan(temperatureC)) {
       Serial.print("C = "); 
