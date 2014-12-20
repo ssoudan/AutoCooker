@@ -27,7 +27,20 @@ In term of libraries, you'll need:
 Once they have been installed you can build and upload the design to your board with:
 
     $ make
+    ...
+    /Applications/Arduino-1.0.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-size --mcu=atmega328p -C --format=avr build-uno/AutoCooker_Uno_V0.elf
+    AVR Memory Usage
+    ----------------
+    Device: atmega328p
+
+    Program:   15028 bytes (45.9% Full)
+    (.text + .data + .bootloader)
+
+    Data:       1847 bytes (90.2% Full)
+    (.data + .bss + .noinit)
+
     $ make ispload
+    ...
 
 # License
 
