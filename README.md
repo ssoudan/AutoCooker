@@ -1,6 +1,7 @@
 # Arduino AutoCooker
 
-Sebastien Soudan <sebastien.soudan@gmail.com>
+Sebastien Soudan 
+<sebastien.soudan@gmail.com>
 
 # Description
 

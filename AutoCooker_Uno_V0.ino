@@ -180,6 +180,6 @@ void loop() {
     }     
   }  
   
-  // sleep a bit
+  // sleep a bit (in ms)
   delay(100);  
 }
