@@ -32,6 +32,9 @@
 #define DEFAULT_DURATION 60
 #define DEFAULT_TARGET_TEMPERATURE 65
 
+/*
+    One step
+*/
 class Step 
 {
     
@@ -52,11 +55,13 @@ private:
 
     uint8_t selected;
 
-    void incTemperature() { if (!isDone() && target_temperature < 0xffff) target_temperature++; };
-    void decTemperature() { if (!isDone() && target_temperature > 0x0000) target_temperature--; };
+    void incTemperature() { if (!isDone() && target_temperature < 0xffff) target_temperature++; }
 
-    void incDuration() { if (!isDone() && target_duration < 0xffff) target_duration++; };
-    void decDuration() { if (!isDone() && target_duration > 0x0000) target_duration--; };
+    void decTemperature() { if (!isDone() && target_temperature > 0x0000) target_temperature--; }
+
+    void incDuration() { if (!isDone() && target_duration < 0xffff) target_duration++; }
+
+    void decDuration() { if (!isDone() && target_duration > 0x0000) target_duration--; }
 
 public:
     Step() 
@@ -69,7 +74,7 @@ public:
         this->done = false;
         this->selected = 0;
         this->start_time = 0;
-    };
+    }
     
     Step(uint8_t step_number, uint16_t target_duration, uint16_t target_temperature) 
     {
@@ -81,26 +86,29 @@ public:
         this->done = false;
         this->selected = 0;
         this->start_time = 0;
-    };
+    }
 
-    void setStepNumber(uint8_t step_number) { this->step_number = step_number; };
+    void setStepNumber(uint8_t step_number) { this->step_number = step_number; }
 
     void updateElapsedTime(unsigned long millis);
     
-    void setCurrentTemperature(float current_temperature) { this->current_temperature = current_temperature; };
+    void setCurrentTemperature(float current_temperature) { this->current_temperature = current_temperature; }
 
     boolean next() 
     { 
         
-        if (selected < MAX_SELECTOR) {
+        if (selected < MAX_SELECTOR) 
+        {
             selected++;         
             return false;
         }
         return true;
     }
+
     boolean prev() 
     {       
-        if (selected > 0) {
+        if (selected > 0) 
+        {
             selected--;
             return false;
         }
@@ -108,15 +116,17 @@ public:
     }
 
     void inc();
+
     void dec();
 
     boolean isOn() 
     {
         return (!isDone() && current_temperature < target_temperature);
-    };
+    }
 
     void display(Adafruit_SSD1306 &display, boolean isRunning);
-    boolean isDone() { return this->done; };
+
+    boolean isDone() { return this->done; }
 
 };
 

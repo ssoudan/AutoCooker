@@ -30,18 +30,25 @@
 
 #define MAX_STEPS 10
 
+/*
+    A collection of Steps
+*/
 class StepHolder {
 
     private:
         Step steps[MAX_STEPS];
+        
         uint8_t current_running_step;
+        
         uint8_t current_edited_step;
 
-        void moveToNextRunningStep() { if (this->current_running_step < MAX_STEPS - 1) this->current_running_step++; };
-        void moveToPrevRunningStep() { if (this->current_running_step > 0) this->current_running_step--; };
+        void moveToNextRunningStep() { if (this->current_running_step < MAX_STEPS - 1) this->current_running_step++; }
+        
+        void moveToPrevRunningStep() { if (this->current_running_step > 0) this->current_running_step--; }
 
-        void moveToNextEditedStep() { if (this->current_edited_step < MAX_STEPS - 1) this->current_edited_step++; };
-        void moveToPrevEditedStep() { if (this->current_edited_step > 0) this->current_edited_step--; };
+        void moveToNextEditedStep() { if (this->current_edited_step < MAX_STEPS - 1) this->current_edited_step++; }
+        
+        void moveToPrevEditedStep() { if (this->current_edited_step > 0) this->current_edited_step--; }
 
     public:
         StepHolder() 
@@ -53,7 +60,7 @@ class StepHolder {
             {
                 steps[i].setStepNumber(i);
             }
-        };
+        }
     
         void display(Adafruit_SSD1306 &display);
 
@@ -64,7 +71,8 @@ class StepHolder {
                 if (current_edited_step < MAX_STEPS - 1)
                     current_edited_step++;
             }
-        };
+        }
+
         void prev() 
         { 
             if (steps[current_edited_step].prev())
@@ -72,10 +80,11 @@ class StepHolder {
                 if (current_edited_step > 0)
                     current_edited_step--;
             } 
-        };
+        }
 
-        void inc() { steps[current_edited_step].inc(); };
-        void dec() { steps[current_edited_step].dec(); };
+        void inc() { steps[current_edited_step].inc(); }
+
+        void dec() { steps[current_edited_step].dec(); }
 
         void setCurrentTemperature(float current_temperature) 
         { 
@@ -83,7 +92,7 @@ class StepHolder {
             {
                 steps[i].setCurrentTemperature(current_temperature); 
             }
-        };
+        }
 
         void updateElapsedTime(unsigned long millis) 
         { 
@@ -96,14 +105,15 @@ class StepHolder {
                 steps[current_running_step].updateElapsedTime(millis);
             }
                 
-        };
+        }
 
-        boolean isOn() {
+        boolean isOn()
+        {
             if (steps[current_running_step].isDone())
                 return false;
             else 
                 return steps[current_running_step].isOn();
-        };
+        }
 };
 
 #endif

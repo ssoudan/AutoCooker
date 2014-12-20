@@ -25,16 +25,20 @@ display(Adafruit_SSD1306 & display, boolean isRunning)
     display.clearDisplay();
     display.setTextSize(1);
 
-    if (isRunning) {
+    if (isRunning) 
+    {
         display.setCursor(128 - 6 * 6, 0);
         display.setTextColor(BLACK, WHITE);
         display.print("ACTIVE");
 
         display.setCursor(2, 54);
         display.setTextColor(BLACK, WHITE);
-        if (isOn()) {
+        if (isOn()) 
+        {
             display.print("/!\\ HEATING /!\\");
-        } else {
+        } 
+        else 
+        {
             display.print("COOLING");
         }
     }
@@ -53,25 +57,30 @@ display(Adafruit_SSD1306 & display, boolean isRunning)
 
     display.setCursor(2, 22);
     display.print("Target: ");
-    if (selected == TEMPERATURE_SELECTOR) {
+    if (selected == TEMPERATURE_SELECTOR) 
+    {
         display.setTextColor(BLACK, WHITE);
     }
     display.print(target_temperature);
     display.print(" C");
-    if (selected == TEMPERATURE_SELECTOR) {
+    if (selected == TEMPERATURE_SELECTOR) 
+    {
         display.setTextColor(WHITE, BLACK);
     }
     display.setCursor(2, 32);
     display.print("Duration: ");
-    if (selected == DURATION_SELECTOR) {
+    if (selected == DURATION_SELECTOR) 
+    {
         display.setTextColor(BLACK, WHITE);
     }
     display.print(target_duration);
     display.print(" min");
-    if (selected == DURATION_SELECTOR) {
+    if (selected == DURATION_SELECTOR) 
+    {
         display.setTextColor(WHITE, BLACK);
     }
-    if (isRunning) {
+    if (isRunning) 
+    {
         display.setCursor(2, 42);
         display.print("Remaining: ");
         display.print(target_duration - elapsed_duration);
@@ -90,7 +99,8 @@ updateElapsedTime(unsigned long millis)
         }
         this->elapsed_duration = (millis - this->start_time) / 1000 / 60;
 
-        if (this->elapsed_duration == this->target_duration) {
+        if (this->elapsed_duration >= this->target_duration) 
+        {
             this->done = true;
         }
     }
@@ -99,7 +109,8 @@ updateElapsedTime(unsigned long millis)
 void        Step::
 inc()
 {
-    switch (selected) {
+    switch (selected) 
+    {
     case DURATION_SELECTOR:
         incDuration();
         break;
@@ -115,7 +126,8 @@ inc()
 void        Step::
 dec()
 {
-    switch (selected) {
+    switch (selected) 
+    {
     case DURATION_SELECTOR:
         decDuration();
         break;
